@@ -1,8 +1,8 @@
 {
-    "version":  "0.4.1",
-    "notes":  "0.4.1\n\n- 设置里加了「关于」：开发者、联系邮箱都写在里面\n- 顺手把设置页的排版理了一遍",
-    "url":  "https://github.com/potatoes-07/toolbox/releases/download/v0.4.1/toolbox-win-0.4.1-setup.exe",
-    "sha256":  "f98d7bb04077eb3d3c63a7ee49d4295f084b1888131a30f0c13dbdfc59a358d4",
-    "size":  89926862,
+    "version":  "0.5.1",
+    "notes":  "0.5.1\n\n- 换了新图标：四个格子的小盒子，桌面、手机、任务栏都换掉了\n- 电脑：设置分成提醒 / 更新 / 数据 / 关于四块，不用一直往下翻\n- 电脑：生日列表鼠标放上去能直接编辑、删除\n- 手机：功能挪到底部四个 tab，设置和关于收进「我的」",
+    "url":  "https://github.com/potatoes-07/toolbox/releases/download/v0.5.1/toolbox-win-0.5.1-setup.exe",
+    "sha256":  "9978b800bbd997e95ec139f886f9ad2cd162f49f1971ccf8ed7464ed7ca4ad60",
+    "size":  89986423,
     "pubDate":  "2026-11-16"
 }
