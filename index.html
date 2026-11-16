@@ -357,7 +357,7 @@
         <div class="log">
           <div class="log-item">
             <div class="log-top"><b>Android</b><span class="ver" id="ver-android">—</span><span class="when">最新</span></div>
-            <ul>
+            <ul id="notes-android">
               <li>设置里能检查更新、下载、装上新版</li>
               <li>界面改成手机上更顺手的样子：顶栏换功能、列表铺满</li>
             </ul>
@@ -432,6 +432,7 @@
         const verWin = document.getElementById('ver-win');
         const verAndroid = document.getElementById('ver-android');
         const notesWin = document.getElementById('notes-win');
+        const notesAndroid = document.getElementById('notes-android');
         const winBtn = document.getElementById('dl-win');
         const andBtn = document.getElementById('dl-android');
 
@@ -466,6 +467,14 @@
           andMeta.innerHTML = `v${apk.version} · 安装包 ${mb(apk.size)} MB<br />传到手机上点开装，允许未知来源`;
           andBtn.href = apk.url || '#';
           verAndroid.textContent = 'v' + apk.version;
+
+          const aLines = String(apk.notes || '')
+            .split(/\r?\n/)
+            .map((s) => s.trim())
+            .filter((s) => s && !/^v?\d/.test(s));
+          if (aLines.length) {
+            notesAndroid.innerHTML = aLines.map((s) => `<li>${s.replace(/^[-·]\s*/, '')}</li>`).join('');
+          }
         } catch (e) {
           andMeta.textContent = '安装包暂时读不到';
           andBtn.href = '#';
