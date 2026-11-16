@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>工具盒 · 一个装小工具的盒子</title>
-    <meta name="description" content="工具盒：一个 Windows 桌面小盒子，装着生日提醒、笔记这些自己用的小工具。数据只存本机。" />
+    <meta
+      name="description"
+      content="工具盒：电脑和手机上的小盒子，装着生日提醒、笔记、隐私空间这几个自己用的小工具。数据只存在你自己的设备上。"
+    />
     <link rel="icon" href="icon.png" />
     <style>
       :root {
@@ -17,41 +20,77 @@
         --line: #e7ebf2;
       }
       * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
         background: var(--bg);
         color: var(--text);
         font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
-        line-height: 1.6;
+        line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
       .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+      a { color: var(--blue); }
+      code { background: #eceff5; padding: 2px 6px; border-radius: 5px; font-size: 12px; }
 
-      header { padding: 26px 0; }
-      .brand { display: flex; align-items: center; gap: 12px; }
-      .brand img { width: 40px; height: 40px; border-radius: 11px; }
-      .brand b { font-size: 19px; letter-spacing: .3px; }
-      .brand span { color: var(--sub); font-size: 13px; margin-left: 2px; }
+      /* 顶上那条导航，跟页面一起滚但吸在顶上 */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(244, 246, 250, .92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar .wrap {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        height: 62px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; margin-right: 6px; }
+      .brand img { width: 30px; height: 30px; border-radius: 9px; display: block; }
+      .brand b { font-size: 16px; letter-spacing: .3px; }
+      .navlinks { display: flex; gap: 4px; margin-left: auto; align-items: center; }
+      .navlinks a {
+        color: var(--sub);
+        text-decoration: none;
+        font-size: 13.5px;
+        padding: 7px 10px;
+        border-radius: 8px;
+      }
+      .navlinks a:hover { background: #e9edf5; color: var(--text); }
+      .navlinks .get {
+        background: var(--blue);
+        color: #fff;
+        font-weight: 600;
+        padding: 7px 14px;
+        margin-left: 6px;
+      }
+      .navlinks .get:hover { background: var(--blue-dark); color: #fff; }
 
+      /* 头图 + 两个下载卡 */
       .hero {
         background: linear-gradient(135deg, #2f6fed 0%, #4f8bff 100%);
         border-radius: 22px;
         color: #fff;
-        padding: 44px 44px 40px;
-        margin: 8px 0 34px;
+        padding: 40px 40px 36px;
+        margin: 26px 0 40px;
         position: relative;
         overflow: hidden;
       }
       .hero::after {
         content: "";
         position: absolute;
-        right: -80px; top: -80px;
-        width: 320px; height: 320px;
+        right: -80px;
+        top: -90px;
+        width: 320px;
+        height: 320px;
         background: rgba(255, 255, 255, .09);
         border-radius: 50%;
       }
-      .hero h1 { font-size: 34px; margin: 0 0 10px; letter-spacing: .5px; }
-      .hero p { margin: 0 0 26px; font-size: 15px; color: rgba(255, 255, 255, .88); max-width: 640px; }
+      .hero h1 { font-size: 30px; margin: 0 0 8px; letter-spacing: .5px; }
+      .hero p { margin: 0 0 24px; font-size: 14.5px; color: rgba(255, 255, 255, .9); max-width: 720px; }
       .dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 620px; position: relative; }
       .plat {
         display: block;
@@ -79,43 +118,85 @@
         vertical-align: 2px;
       }
 
-      section { margin-bottom: 34px; }
-      h2 { font-size: 17px; margin: 0 0 14px; letter-spacing: .3px; }
-      .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      /* 每一段的抬头：小字分类 + 大标题 + 一句说明 */
+      section { margin-bottom: 46px; scroll-margin-top: 78px; }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 1.4px;
+        color: var(--blue);
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      h2 { font-size: 21px; margin: 0 0 6px; letter-spacing: .3px; }
+      .lead { color: var(--sub); font-size: 13.5px; margin: 0 0 18px; }
+
+      /* 功能按用途分三组 */
+      .group { margin-bottom: 20px; }
+      .group:last-child { margin-bottom: 0; }
+      .group-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--sub);
+        margin-bottom: 10px;
+      }
+      .group-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+      .group-head b { color: var(--text); font-size: 13.5px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+      .grid.one { max-width: 360px; }
       .card {
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: 16px;
-        padding: 20px 22px;
+        padding: 18px 20px;
       }
       .card h3 { margin: 0 0 6px; font-size: 15px; }
       .card p { margin: 0; color: var(--sub); font-size: 13.5px; }
-      .card .ico { font-size: 22px; display: block; margin-bottom: 10px; }
+      .card .ico { font-size: 20px; display: block; margin-bottom: 8px; }
 
+      /* 界面截图 */
       .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-      .shots img { width: 100%; border-radius: 14px; border: 1px solid var(--line); display: block; }
-      .shots img:last-child:nth-child(odd) { grid-column: 1 / -1; }
-
-      .notes {
+      .shot { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 10px; }
+      .shot img { width: 100%; border-radius: 10px; display: block; border: 1px solid var(--line); }
+      .shot figcaption { color: var(--sub); font-size: 12.5px; padding: 8px 4px 2px; }
+      .shots .shot:last-child:nth-child(odd) { grid-column: 1 / -1; }
+      .phone {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 22px;
+        align-items: center;
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: 16px;
-        padding: 22px 24px;
-        font-size: 14px;
-        color: #3b4553;
+        padding: 18px 22px;
+        margin-top: 14px;
       }
-      .notes .ver { font-weight: 700; color: var(--text); margin-bottom: 8px; }
-      .notes ul { margin: 8px 0 0; padding-left: 20px; color: var(--sub); }
-      .notes li { margin: 4px 0; }
+      .phone b { font-size: 14.5px; }
+      .phone p { color: var(--sub); font-size: 13.5px; margin: 6px 0 0; }
 
-      footer {
-        border-top: 1px solid var(--line);
-        margin-top: 10px;
-        padding: 22px 0 40px;
-        color: var(--sub);
-        font-size: 13px;
-      }
-      footer code { background: #eceff5; padding: 2px 6px; border-radius: 5px; font-size: 12px; }
+      /* 更新记录 */
+      .log { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 6px 22px; }
+      .log-item { padding: 14px 0; border-bottom: 1px solid var(--line); }
+      .log-item:last-child { border-bottom: 0; }
+      .log-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .log-top b { font-size: 14.5px; }
+      .log-top .ver { color: var(--sub); font-size: 12.5px; }
+      .log-top .when { margin-left: auto; color: #9aa4b2; font-size: 12.5px; }
+      .log ul { margin: 6px 0 0; padding-left: 20px; color: var(--sub); font-size: 13.5px; }
+      .log li { margin: 3px 0; }
+
+      /* 常见问题 */
+      .faq { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 6px 22px; }
+      details { border-bottom: 1px solid var(--line); padding: 13px 0; }
+      details:last-child { border-bottom: 0; }
+      summary { cursor: pointer; font-size: 14px; font-weight: 600; list-style: none; display: flex; align-items: center; }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "＋"; margin-left: auto; color: #9aa4b2; font-weight: 400; }
+      details[open] summary::after { content: "－"; }
+      details p { margin: 8px 0 0; color: var(--sub); font-size: 13.5px; }
+
       .tip {
         background: #fff8e8;
         border: 1px solid #f4e2bd;
@@ -125,25 +206,49 @@
         font-size: 13px;
         margin-top: 14px;
       }
-      @media (max-width: 720px) {
-        .hero { padding: 30px 24px; }
-        .hero h1 { font-size: 26px; }
-        .shots { grid-template-columns: 1fr; }
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 22px 0 44px;
+        color: var(--sub);
+        font-size: 13px;
+      }
+
+      @media (max-width: 760px) {
+        .topbar .wrap { height: 56px; gap: 10px; }
+        .brand b { display: none; }
+        .navlinks a { padding: 6px 8px; font-size: 13px; }
+        .navlinks a.hide-sm { display: none; }
+        .hero { padding: 28px 22px; margin: 18px 0 32px; }
+        .hero h1 { font-size: 24px; }
+        .dl { grid-template-columns: 1fr; }
         .grid { grid-template-columns: 1fr; }
+        .grid.one { max-width: none; }
+        .shots { grid-template-columns: 1fr; }
+        .phone { grid-template-columns: 1fr; }
+        .log, .faq { padding: 4px 16px; }
       }
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <header>
+    <div class="topbar">
+      <div class="wrap">
         <div class="brand">
           <img src="icon.png" alt="工具盒" />
           <b>工具盒</b>
-          <span>一个小盒子，装你自己的工具</span>
         </div>
-      </header>
+        <nav class="navlinks">
+          <a href="#features">功能</a>
+          <a href="#screens" class="hide-sm">界面</a>
+          <a href="#log" class="hide-sm">更新</a>
+          <a href="#faq">常见问题</a>
+          <a href="#download" class="get">下载</a>
+        </nav>
+      </div>
+    </div>
 
-      <div class="hero">
+    <div class="wrap">
+      <div class="hero" id="download">
         <h1>工具盒</h1>
         <p>给自己做的小软件：生日提醒、随手笔记、隐私空间。电脑和手机都能装，数据只存在你自己的设备上。</p>
         <div class="dl">
@@ -158,66 +263,164 @@
         </div>
       </div>
 
-      <section>
+      <section id="features">
+        <div class="eyebrow">功能</div>
         <h2>里面有什么</h2>
-        <div class="grid">
-          <div class="card">
-            <span class="ico">🎂</span>
-            <h3>生日提醒</h3>
-            <p>公历农历都行，提前 7 天、3 天、1 天和当天各提醒一次，推过的不会重复弹。</p>
+        <p class="lead">按你平常怎么用来分：每天顺手记的、要藏起来的、还有盒子本身的几件事。</p>
+
+        <div class="group">
+          <div class="group-head"><b>每天用得上</b><span>打开就能用，不用配置</span></div>
+          <div class="grid">
+            <div class="card">
+              <span class="ico">🎂</span>
+              <h3>生日提醒</h3>
+              <p>公历农历都行，提前 7 天、3 天、1 天和当天各提醒一次，推过的不会重复弹。</p>
+            </div>
+            <div class="card">
+              <span class="ico">📝</span>
+              <h3>笔记</h3>
+              <p>打字、贴图、记链接、导入 txt / md，边打边存。图片跟正文存在一起。</p>
+            </div>
           </div>
-          <div class="card">
-            <span class="ico">📝</span>
-            <h3>笔记</h3>
-            <p>打字、贴图、记链接、导入 txt / md，边打边存。图片存在本地文件夹里，跟正文一起。</p>
+        </div>
+
+        <div class="group">
+          <div class="group-head"><b>要藏起来的</b><span>加了一道口令</span></div>
+          <div class="grid one">
+            <div class="card">
+              <span class="ico">🔐</span>
+              <h3>隐私空间</h3>
+              <p>证件照片、文件、常用网址放这儿，进去要输口令。文件是真加密的，拿到的只是乱码。</p>
+            </div>
           </div>
-          <div class="card">
-            <span class="ico">🔐</span>
-            <h3>隐私空间</h3>
-            <p>证件照片、文件、常用网址放这儿，进去要输口令。文件是真加密的，拿到的只是乱码。</p>
-          </div>
-          <div class="card">
-            <span class="ico">🔄</span>
-            <h3>能自己更新</h3>
-            <p>电脑版在设置里点一下就知道有没有新版，下载、装上、重启一条龙；手机版再装一次新的就覆盖了，数据不动。</p>
-          </div>
-          <div class="card">
-            <span class="ico">🔒</span>
-            <h3>只在你自己的设备上</h3>
-            <p>没有账号、没有服务器。电脑上数据在 <code>%APPDATA%\工具盒</code>，手机上也在 App 自己的目录里。</p>
-          </div>
-          <div class="card">
-            <span class="ico">🧩</span>
-            <h3>还能往里加</h3>
-            <p>壳子只认一张工具表，想要什么小功能，加一个进去就是新的一栏。</p>
+        </div>
+
+        <div class="group">
+          <div class="group-head"><b>盒子本身</b><span>这些不用你操心</span></div>
+          <div class="grid">
+            <div class="card">
+              <span class="ico">🔄</span>
+              <h3>能自己更新</h3>
+              <p>电脑版在设置里点一下就知道有没有新版，下载、装上、重启一条龙；手机版在版本卡里下载并安装。</p>
+            </div>
+            <div class="card">
+              <span class="ico">🔒</span>
+              <h3>只在你自己的设备上</h3>
+              <p>没有账号、没有服务器。电脑上数据在 <code>%APPDATA%\工具盒</code>，手机上也在 App 自己的目录里。</p>
+            </div>
+            <div class="card">
+              <span class="ico">🧩</span>
+              <h3>还能往里加</h3>
+              <p>壳子只认一张工具表，想要什么小功能，加一个进去就是新的一栏。</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section>
+      <section id="screens">
+        <div class="eyebrow">界面</div>
         <h2>长什么样</h2>
+        <p class="lead">电脑上是左边一列功能、右边一整块内容；手机上是微信那种结构，左上角换功能。</p>
         <div class="shots">
-          <img src="shot-birthday.png" alt="生日提醒界面" />
-          <img src="shot-notes.png" alt="笔记界面" />
-          <img src="shot-vault.png" alt="隐私空间界面" />
+          <figure class="shot" style="margin: 0">
+            <img src="shot-birthday.png" alt="生日提醒界面" />
+            <figcaption>生日提醒：谁快过生日一眼看到</figcaption>
+          </figure>
+          <figure class="shot" style="margin: 0">
+            <img src="shot-notes.png" alt="笔记界面" />
+            <figcaption>笔记：左边列表，右边写</figcaption>
+          </figure>
+          <figure class="shot" style="margin: 0">
+            <img src="shot-vault.png" alt="隐私空间界面" />
+            <figcaption>隐私空间：要口令才打得开</figcaption>
+          </figure>
+        </div>
+        <div class="phone">
+          <figure class="shot" style="margin: 0">
+            <img src="shot-phone.png" alt="手机上的界面" />
+            <figcaption>手机（Android）：顶上一条栏，左上角点开换功能</figcaption>
+          </figure>
+          <div>
+            <b>同一个盒子，两种摆法</b>
+            <p>
+              电脑上空间大，功能列在左边，右边整块内容；手机上改成竖着用，功能收进左上角，列表铺满整屏，点笔记是一条条点进去写。
+            </p>
+            <p>两边的数据各存各的，先互不同步。</p>
+          </div>
         </div>
       </section>
 
-      <section>
-        <h2>这个版本</h2>
-        <div class="notes">
-          <div class="ver" id="ver">版本信息读不到，直接点上面的下载按钮也行</div>
-          <div id="notes"></div>
+      <section id="log">
+        <div class="eyebrow">更新</div>
+        <h2>改过什么</h2>
+        <p class="lead">最新的在最上面，两个平台分开记。</p>
+        <div class="log">
+          <div class="log-item">
+            <div class="log-top"><b>Android</b><span class="ver" id="ver-android">—</span><span class="when">最新</span></div>
+            <ul>
+              <li>设置里能检查更新、下载、装上新版</li>
+              <li>界面改成手机上更顺手的样子：顶栏换功能、列表铺满</li>
+            </ul>
+          </div>
+          <div class="log-item">
+            <div class="log-top"><b>Windows</b><span class="ver" id="ver-win">—</span><span class="when">最新</span></div>
+            <ul id="notes-win">
+              <li>隐私空间：加文件、加图片、加网址，都要口令</li>
+              <li>笔记能导入 txt / md</li>
+            </ul>
+          </div>
+          <div class="log-item">
+            <div class="log-top"><b>更早</b><span class="ver">0.3.x / 1.0.0</span></div>
+            <ul>
+              <li>能用文件夹或网址当更新源，软件自己检查新版</li>
+              <li>托盘和隐藏区图标不再是空白；再点图标只把窗口叫出来，不会开第二份</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq">
+        <div class="eyebrow">常见问题</div>
+        <h2>装之前想知道的</h2>
+        <p class="lead">下面这几条基本能回答大部分疑问；还有别的，直接问做这个的人。</p>
+        <div class="faq">
+          <details open>
+            <summary>数据存在哪？会上传吗？</summary>
+            <p>
+              只存本机，不联网、不上传。电脑上在 <code>%APPDATA%\工具盒</code>（笔记里的图片在同目录的
+              <code>attachments</code>），手机上在 App 自己的私有目录里，别的应用看不到。
+            </p>
+          </details>
+          <details>
+            <summary>怎么更新新版本？</summary>
+            <p>
+              电脑版：设置里点「检查更新」，有新版本直接下载、装好、重启。<br />
+              手机版：设置最上面那张「版本」卡，点「检查更新」→「下载并安装」。第一次装会跳一个「允许安装应用」的开关，打开一次就行。
+            </p>
+          </details>
+          <details>
+            <summary>手机和电脑的数据会同步吗？</summary>
+            <p>暂时不会，两边各存各的。同一个 App 覆盖安装不会丢数据。</p>
+          </details>
+          <details>
+            <summary>为什么浏览器说「通常不会下载这个文件」？</summary>
+            <p>
+              因为安装包没有买签名证书，Windows 和浏览器都会多问一句。点<strong>保留</strong> / <strong>仍要运行</strong>就行，包本身是你自己这边打出来的。
+            </p>
+          </details>
+          <details>
+            <summary>卸载了数据还在吗？</summary>
+            <p>在。卸载只删程序，<code>%APPDATA%\工具盒</code> 会留着；想彻底清干净就手动删这个文件夹。</p>
+          </details>
         </div>
         <div class="tip">
-          浏览器提示「通常不会下载 工具盒…exe」或者「已保护你的电脑」时，点 <strong>保留</strong> / <strong>仍要运行</strong> 就行。<br />
-          安装包没有签名，所以会拦一下；需要 Windows 10 / 11 64 位，装在当前用户目录，不用管理员权限。
+          电脑需要 Windows 10 / 11 64 位，装在当前用户目录，不用管理员权限；手机需要 Android 7 以上，允许「未知来源」安装。
         </div>
       </section>
 
       <footer>
         工具盒 · 自己做的小工具<br />
-        卸载后数据还在 <code>%APPDATA%\工具盒</code>，想彻底清掉手动删这个文件夹。
+        页面上这个版本号是自动读的，发新版只要把 site 文件夹整个传上去。
       </footer>
     </div>
 
@@ -226,8 +429,9 @@
       (async () => {
         const winMeta = document.getElementById('meta-win');
         const andMeta = document.getElementById('meta-android');
-        const verEl = document.getElementById('ver');
-        const notesEl = document.getElementById('notes');
+        const verWin = document.getElementById('ver-win');
+        const verAndroid = document.getElementById('ver-android');
+        const notesWin = document.getElementById('notes-win');
         const winBtn = document.getElementById('dl-win');
         const andBtn = document.getElementById('dl-android');
 
@@ -236,33 +440,36 @@
           if (!res.ok) throw new Error(String(res.status));
           return res.json();
         };
-        const mb = (size) => (size / 1024 / 1024).toFixed(0);
+        const mb = (size) => (Number(size) / 1024 / 1024).toFixed(size > 20 * 1024 * 1024 ? 0 : 1);
 
         try {
           const info = await read('update.json');
           winMeta.innerHTML = `最新版 v${info.version} · 64 位 · ${mb(info.size)} MB<br />双击安装，不用管理员权限`;
-          winBtn.href = info.url || 'update.json';
-          verEl.textContent = `v${info.version}`;
+          winBtn.href = info.url || '#';
+          verWin.textContent = 'v' + info.version;
+
           const lines = String(info.notes || '')
             .split(/\r?\n/)
             .map((s) => s.trim())
-            .filter((s) => s && !s.startsWith('v') && s !== info.version);
-          notesEl.innerHTML = lines.length
-            ? '<ul>' + lines.map((s) => `<li>${s.replace(/^[-·]\s*/, '')}</li>`).join('') + '</ul>'
-            : '';
+            .filter((s) => s && !/^v?\d/.test(s));
+          if (lines.length) {
+            notesWin.innerHTML = lines.map((s) => `<li>${s.replace(/^[-·]\s*/, '')}</li>`).join('');
+          }
         } catch (e) {
           winMeta.textContent = '版本信息暂时读不到';
           winBtn.href = '#';
-          verEl.textContent = '版本信息读不到，直接点上面的下载按钮也行';
+          verWin.textContent = '—';
         }
 
         try {
           const apk = await read('android.json');
           andMeta.innerHTML = `v${apk.version} · 安装包 ${mb(apk.size)} MB<br />传到手机上点开装，允许未知来源`;
           andBtn.href = apk.url || '#';
+          verAndroid.textContent = 'v' + apk.version;
         } catch (e) {
           andMeta.textContent = '安装包暂时读不到';
           andBtn.href = '#';
+          verAndroid.textContent = '—';
         }
       })();
     </script>
