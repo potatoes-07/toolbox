@@ -52,23 +52,32 @@
       }
       .hero h1 { font-size: 34px; margin: 0 0 10px; letter-spacing: .5px; }
       .hero p { margin: 0 0 26px; font-size: 15px; color: rgba(255, 255, 255, .88); max-width: 640px; }
-      .dl { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+      .dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; max-width: 620px; position: relative; }
+      .plat {
+        display: block;
         background: #fff;
         color: var(--blue-dark);
-        font-weight: 700;
-        font-size: 16px;
-        padding: 13px 26px;
-        border-radius: 12px;
+        border-radius: 14px;
+        padding: 14px 18px 15px;
         text-decoration: none;
         box-shadow: 0 8px 20px rgba(0, 0, 0, .14);
         transition: transform .12s ease;
       }
-      .btn:hover { transform: translateY(-1px); }
-      .meta { font-size: 13px; color: rgba(255, 255, 255, .82); line-height: 1.9; position: relative; }
+      .plat:hover { transform: translateY(-1px); }
+      .plat-name { display: block; font-size: 17px; font-weight: 700; letter-spacing: .3px; }
+      .plat-meta { display: block; font-size: 12.5px; color: #5b6b85; line-height: 1.7; margin-top: 2px; }
+      .plat.ghost { background: rgba(255, 255, 255, .14); color: #fff; border: 1px solid rgba(255, 255, 255, .55); box-shadow: none; }
+      .plat.ghost .plat-meta { color: rgba(255, 255, 255, .85); }
+      .plat .tag {
+        font-size: 11px;
+        font-weight: 700;
+        background: #ffd76a;
+        color: #6b4a00;
+        border-radius: 6px;
+        padding: 1px 6px;
+        margin-left: 6px;
+        vertical-align: 2px;
+      }
 
       section { margin-bottom: 34px; }
       h2 { font-size: 17px; margin: 0 0 14px; letter-spacing: .3px; }
@@ -136,10 +145,16 @@
 
       <div class="hero">
         <h1>工具盒</h1>
-        <p>给自己做的小软件：生日提醒、随手笔记，都收在一个窗口里。数据只在你自己电脑上。</p>
+        <p>给自己做的小软件：生日提醒、随手笔记、隐私空间。电脑和手机都能装，数据只存在你自己的设备上。</p>
         <div class="dl">
-          <a class="btn" id="download" href="#">下载 Windows 版</a>
-          <div class="meta" id="meta">正在读版本信息…</div>
+          <a class="plat" id="dl-win" href="#">
+            <span class="plat-name">Windows</span>
+            <span class="plat-meta" id="meta-win">正在读版本信息…</span>
+          </a>
+          <a class="plat ghost" id="dl-android" href="#">
+            <span class="plat-name">Android<span class="tag">新</span></span>
+            <span class="plat-meta" id="meta-android">正在读版本信息…</span>
+          </a>
         </div>
       </div>
 
@@ -164,12 +179,12 @@
           <div class="card">
             <span class="ico">🔄</span>
             <h3>能自己更新</h3>
-            <p>设置里点一下就知道有没有新版，下载、装上、重启一条龙，数据不动。</p>
+            <p>电脑版在设置里点一下就知道有没有新版，下载、装上、重启一条龙；手机版再装一次新的就覆盖了，数据不动。</p>
           </div>
           <div class="card">
             <span class="ico">🔒</span>
-            <h3>只在你自己电脑上</h3>
-            <p>没有账号、没有服务器。数据就在 <code>%APPDATA%\工具盒</code>。</p>
+            <h3>只在你自己的设备上</h3>
+            <p>没有账号、没有服务器。电脑上数据在 <code>%APPDATA%\工具盒</code>，手机上也在 App 自己的目录里。</p>
           </div>
           <div class="card">
             <span class="ico">🧩</span>
@@ -207,20 +222,26 @@
     </div>
 
     <script>
-      // 页面自己读 update.json，所以发新版只要把 site 文件夹整个传上去
+      // 页面自己读 update.json / android.json，所以发新版只要把 site 文件夹整个传上去
       (async () => {
-        const metaEl = document.getElementById('meta');
+        const winMeta = document.getElementById('meta-win');
+        const andMeta = document.getElementById('meta-android');
         const verEl = document.getElementById('ver');
         const notesEl = document.getElementById('notes');
-        const btn = document.getElementById('download');
-        try {
-          const res = await fetch('update.json', { cache: 'no-store' });
+        const winBtn = document.getElementById('dl-win');
+        const andBtn = document.getElementById('dl-android');
+
+        const read = async (name) => {
+          const res = await fetch(name, { cache: 'no-store' });
           if (!res.ok) throw new Error(String(res.status));
-          const info = await res.json();
-          const mb = (info.size / 1024 / 1024).toFixed(0);
-          metaEl.innerHTML = `最新版 v${info.version} · Windows 64 位 · ${mb} MB<br />双击安装，不用管理员权限`;
-          btn.href = info.url || 'update.json';
-          btn.textContent = `下载 v${info.version}`;
+          return res.json();
+        };
+        const mb = (size) => (size / 1024 / 1024).toFixed(0);
+
+        try {
+          const info = await read('update.json');
+          winMeta.innerHTML = `最新版 v${info.version} · 64 位 · ${mb(info.size)} MB<br />双击安装，不用管理员权限`;
+          winBtn.href = info.url || 'update.json';
           verEl.textContent = `v${info.version}`;
           const lines = String(info.notes || '')
             .split(/\r?\n/)
@@ -230,8 +251,18 @@
             ? '<ul>' + lines.map((s) => `<li>${s.replace(/^[-·]\s*/, '')}</li>`).join('') + '</ul>'
             : '';
         } catch (e) {
-          metaEl.textContent = '版本信息暂时读不到';
-          btn.href = '#';
+          winMeta.textContent = '版本信息暂时读不到';
+          winBtn.href = '#';
+          verEl.textContent = '版本信息读不到，直接点上面的下载按钮也行';
+        }
+
+        try {
+          const apk = await read('android.json');
+          andMeta.innerHTML = `v${apk.version} · 安装包 ${mb(apk.size)} MB<br />传到手机上点开装，允许未知来源`;
+          andBtn.href = apk.url || '#';
+        } catch (e) {
+          andMeta.textContent = '安装包暂时读不到';
+          andBtn.href = '#';
         }
       })();
     </script>
