@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>工具盒 · 一个装小工具的盒子</title>
+    <meta name="description" content="工具盒：一个 Windows 桌面小盒子，装着生日提醒、笔记这些自己用的小工具。数据只存本机。" />
+    <link rel="icon" href="icon.png" />
+    <style>
+      :root {
+        --blue: #2f6fed;
+        --blue-dark: #1f57c9;
+        --bg: #f4f6fa;
+        --card: #ffffff;
+        --text: #1c2430;
+        --sub: #6b7686;
+        --line: #e7ebf2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+      header { padding: 26px 0; }
+      .brand { display: flex; align-items: center; gap: 12px; }
+      .brand img { width: 40px; height: 40px; border-radius: 11px; }
+      .brand b { font-size: 19px; letter-spacing: .3px; }
+      .brand span { color: var(--sub); font-size: 13px; margin-left: 2px; }
+
+      .hero {
+        background: linear-gradient(135deg, #2f6fed 0%, #4f8bff 100%);
+        border-radius: 22px;
+        color: #fff;
+        padding: 44px 44px 40px;
+        margin: 8px 0 34px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        right: -80px; top: -80px;
+        width: 320px; height: 320px;
+        background: rgba(255, 255, 255, .09);
+        border-radius: 50%;
+      }
+      .hero h1 { font-size: 34px; margin: 0 0 10px; letter-spacing: .5px; }
+      .hero p { margin: 0 0 26px; font-size: 15px; color: rgba(255, 255, 255, .88); max-width: 640px; }
+      .dl { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        color: var(--blue-dark);
+        font-weight: 700;
+        font-size: 16px;
+        padding: 13px 26px;
+        border-radius: 12px;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, .14);
+        transition: transform .12s ease;
+      }
+      .btn:hover { transform: translateY(-1px); }
+      .meta { font-size: 13px; color: rgba(255, 255, 255, .82); line-height: 1.9; position: relative; }
+
+      section { margin-bottom: 34px; }
+      h2 { font-size: 17px; margin: 0 0 14px; letter-spacing: .3px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 20px 22px;
+      }
+      .card h3 { margin: 0 0 6px; font-size: 15px; }
+      .card p { margin: 0; color: var(--sub); font-size: 13.5px; }
+      .card .ico { font-size: 22px; display: block; margin-bottom: 10px; }
+
+      .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .shots img { width: 100%; border-radius: 14px; border: 1px solid var(--line); display: block; }
+
+      .notes {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 22px 24px;
+        font-size: 14px;
+        color: #3b4553;
+      }
+      .notes .ver { font-weight: 700; color: var(--text); margin-bottom: 8px; }
+      .notes ul { margin: 8px 0 0; padding-left: 20px; color: var(--sub); }
+      .notes li { margin: 4px 0; }
+
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 10px;
+        padding: 22px 0 40px;
+        color: var(--sub);
+        font-size: 13px;
+      }
+      footer code { background: #eceff5; padding: 2px 6px; border-radius: 5px; font-size: 12px; }
+      .tip {
+        background: #fff8e8;
+        border: 1px solid #f4e2bd;
+        color: #8a6418;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 13px;
+        margin-top: 14px;
+      }
+      @media (max-width: 720px) {
+        .hero { padding: 30px 24px; }
+        .hero h1 { font-size: 26px; }
+        .shots { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <img src="icon.png" alt="工具盒" />
+          <b>工具盒</b>
+          <span>一个小盒子，装你自己的工具</span>
+        </div>
+      </header>
+
+      <div class="hero">
+        <h1>工具盒</h1>
+        <p>给自己做的小软件：生日提醒、随手笔记，都收在一个窗口里。数据只在你自己电脑上。</p>
+        <div class="dl">
+          <a class="btn" id="download" href="#">下载 Windows 版</a>
+          <div class="meta" id="meta">正在读版本信息…</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>里面有什么</h2>
+        <div class="grid">
+          <div class="card">
+            <span class="ico">🎂</span>
+            <h3>生日提醒</h3>
+            <p>公历农历都行，提前 7 天、3 天、1 天和当天各提醒一次，推过的不会重复弹。</p>
+          </div>
+          <div class="card">
+            <span class="ico">📝</span>
+            <h3>笔记</h3>
+            <p>打字、贴图、记链接，边打边存。图片存在本地文件夹里，跟正文一起。</p>
+          </div>
+          <div class="card">
+            <span class="ico">🔄</span>
+            <h3>能自己更新</h3>
+            <p>设置里点一下就知道有没有新版，下载、装上、重启一条龙，数据不动。</p>
+          </div>
+          <div class="card">
+            <span class="ico">🔒</span>
+            <h3>只在你自己电脑上</h3>
+            <p>没有账号、没有服务器。数据就在 <code>%APPDATA%\工具盒</code>。</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>长什么样</h2>
+        <div class="shots">
+          <img src="shot-birthday.png" alt="生日提醒界面" />
+          <img src="shot-notes.png" alt="笔记界面" />
+        </div>
+      </section>
+
+      <section>
+        <h2>这个版本</h2>
+        <div class="notes">
+          <div class="ver" id="ver">版本信息读不到，直接点上面的下载按钮也行</div>
+          <div id="notes"></div>
+        </div>
+        <div class="tip">
+          安装包没有签名，Windows 第一次可能弹「已保护你的电脑」→ 点「更多信息」→「仍要运行」。<br />
+          需要 Windows 10 / 11 64 位，装在当前用户目录，不用管理员权限。
+        </div>
+      </section>
+
+      <footer>
+        工具盒 · 自己做的小工具<br />
+        卸载后数据还在 <code>%APPDATA%\工具盒</code>，想彻底清掉手动删这个文件夹。
+      </footer>
+    </div>
+
+    <script>
+      // 页面自己读 update.json，所以发新版只要把 site 文件夹整个传上去
+      (async () => {
+        const metaEl = document.getElementById('meta');
+        const verEl = document.getElementById('ver');
+        const notesEl = document.getElementById('notes');
+        const btn = document.getElementById('download');
+        try {
+          const res = await fetch('update.json', { cache: 'no-store' });
+          if (!res.ok) throw new Error(String(res.status));
+          const info = await res.json();
+          const mb = (info.size / 1024 / 1024).toFixed(0);
+          metaEl.innerHTML = `最新版 v${info.version} · Windows 64 位 · ${mb} MB<br />双击安装，不用管理员权限`;
+          btn.href = info.url || 'update.json';
+          btn.textContent = `下载 v${info.version}`;
+          verEl.textContent = `v${info.version}`;
+          const lines = String(info.notes || '')
+            .split(/\r?\n/)
+            .map((s) => s.trim())
+            .filter((s) => s && !s.startsWith('v') && s !== info.version);
+          notesEl.innerHTML = lines.length
+            ? '<ul>' + lines.map((s) => `<li>${s.replace(/^[-·]\s*/, '')}</li>`).join('') + '</ul>'
+            : '';
+        } catch (e) {
+          metaEl.textContent = '版本信息暂时读不到';
+          btn.href = '#';
+        }
+      })();
+    </script>
+  </body>
+</html>
