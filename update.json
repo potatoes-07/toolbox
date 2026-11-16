@@ -1,8 +1,8 @@
 {
-  "version": "0.4.1",
-  "notes": "0.4.1\n\n- 设置里加了「关于」：开发者、联系邮箱都写在里面\n- 顺手把设置页的排版理了一遍",
-  "url": "工具盒-0.4.1-安装包.exe",
-  "sha256": "f98d7bb04077eb3d3c63a7ee49d4295f084b1888131a30f0c13dbdfc59a358d4",
-  "size": 89926862,
-  "pubDate": "2026-11-16"
+    "version":  "0.4.1",
+    "notes":  "0.4.1\n\n- 设置里加了「关于」：开发者、联系邮箱都写在里面\n- 顺手把设置页的排版理了一遍",
+    "url":  "https://github.com/potatoes-07/toolbox/releases/download/v0.4.1/toolbox-win-0.4.1-setup.exe",
+    "sha256":  "f98d7bb04077eb3d3c63a7ee49d4295f084b1888131a30f0c13dbdfc59a358d4",
+    "size":  89926862,
+    "pubDate":  "2026-11-16"
 }
