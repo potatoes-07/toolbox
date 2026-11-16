@@ -72,7 +72,7 @@
 
       section { margin-bottom: 34px; }
       h2 { font-size: 17px; margin: 0 0 14px; letter-spacing: .3px; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+      .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
       .card {
         background: var(--card);
         border: 1px solid var(--line);
@@ -85,6 +85,7 @@
 
       .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
       .shots img { width: 100%; border-radius: 14px; border: 1px solid var(--line); display: block; }
+      .shots img:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
       .notes {
         background: var(--card);
@@ -119,6 +120,7 @@
         .hero { padding: 30px 24px; }
         .hero h1 { font-size: 26px; }
         .shots { grid-template-columns: 1fr; }
+        .grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -152,7 +154,12 @@
           <div class="card">
             <span class="ico">📝</span>
             <h3>笔记</h3>
-            <p>打字、贴图、记链接，边打边存。图片存在本地文件夹里，跟正文一起。</p>
+            <p>打字、贴图、记链接、导入 txt / md，边打边存。图片存在本地文件夹里，跟正文一起。</p>
+          </div>
+          <div class="card">
+            <span class="ico">🔐</span>
+            <h3>隐私空间</h3>
+            <p>证件照片、文件、常用网址放这儿，进去要输口令。文件是真加密的，拿到的只是乱码。</p>
           </div>
           <div class="card">
             <span class="ico">🔄</span>
@@ -164,6 +171,11 @@
             <h3>只在你自己电脑上</h3>
             <p>没有账号、没有服务器。数据就在 <code>%APPDATA%\工具盒</code>。</p>
           </div>
+          <div class="card">
+            <span class="ico">🧩</span>
+            <h3>还能往里加</h3>
+            <p>壳子只认一张工具表，想要什么小功能，加一个进去就是新的一栏。</p>
+          </div>
         </div>
       </section>
 
@@ -172,6 +184,7 @@
         <div class="shots">
           <img src="shot-birthday.png" alt="生日提醒界面" />
           <img src="shot-notes.png" alt="笔记界面" />
+          <img src="shot-vault.png" alt="隐私空间界面" />
         </div>
       </section>
 
@@ -182,7 +195,7 @@
           <div id="notes"></div>
         </div>
         <div class="tip">
-          浏览器提示「通常不会下载 工具盒…exe」或者「已保护你的电脑」时，点 **保留** / **仍要运行** 就行。<br />
+          浏览器提示「通常不会下载 工具盒…exe」或者「已保护你的电脑」时，点 <strong>保留</strong> / <strong>仍要运行</strong> 就行。<br />
           安装包没有签名，所以会拦一下；需要 Windows 10 / 11 64 位，装在当前用户目录，不用管理员权限。
         </div>
       </section>
